@@ -13,3 +13,12 @@
 
 # Dependency directories (remove the comment below to include it)
 # vendor/
+
+# Dev module
+dev/**
+
+# Data folders
+data/**
+
+# Development Makefile
+makefile
