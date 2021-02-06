@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 
+	"github.com/mohitudupa/timber/logger"
 	"github.com/mohitudupa/timber/utility"
 )
 
@@ -18,14 +19,24 @@ func main() {
 
 	log.Println(env)
 
+	// Initialize and perpare TIMBER_DATA directory
 	err = utility.InitDataDirectory(env)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	logPaths, err := utility.GetLogPaths(env)
+	// Fetch list of logfile paths
+	logFiles, err := utility.GetLogFiles(env)
 	if err != nil {
 		log.Fatal(err)
 	}
-	log.Println(logPaths)
+	log.Println(logFiles)
+
+	// Create log Pool and attach existing logfiles
+	p := logger.NewPool(env)
+	for _, logFile := range logFiles {
+		p.Attach(logFile)
+		defer p.Detach(logFile)
+	}
+
 }
