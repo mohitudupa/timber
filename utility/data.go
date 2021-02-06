@@ -23,8 +23,8 @@ func InitDataDirectory(env *Environment) error {
 	return nil
 }
 
-// GetLogPaths returns the list of logfiles in TIMBER_DATA
-func GetLogPaths(env *Environment) (*[]string, error) {
+// GetLogFiles returns the list of logfiles in TIMBER_DATA
+func GetLogFiles(env *Environment) ([]string, error) {
 	// Read TIMBER_DATA folder
 	files, err := ioutil.ReadDir(env.TimberData)
 	if err != nil {
@@ -32,7 +32,7 @@ func GetLogPaths(env *Environment) (*[]string, error) {
 	}
 
 	// Populate log paths
-	logPaths := []string{}
+	logFiles := []string{}
 	for _, file := range files {
 		filePath := path.Join(env.TimberData, file.Name())
 
@@ -41,9 +41,9 @@ func GetLogPaths(env *Environment) (*[]string, error) {
 			continue
 		}
 		if fileStat.Mode().IsRegular() {
-			logPaths = append(logPaths, filePath)
+			logFiles = append(logFiles, file.Name())
 		}
 	}
 
-	return &logPaths, nil
+	return logFiles, nil
 }
