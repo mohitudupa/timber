@@ -18,7 +18,7 @@
 dev/**
 
 # Data folders
-data/**
+.timber/**
 
 # Development Makefile
 makefile
