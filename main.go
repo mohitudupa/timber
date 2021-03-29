@@ -2,41 +2,53 @@ package main
 
 import (
 	"log"
+	"net/http"
+	"os"
+	"path"
 
 	"github.com/mohitudupa/timber/logger"
-	"github.com/mohitudupa/timber/utility"
 )
 
 func main() {
 
-	log.Println("Hello World!")
+	log.Println("Starting Timber...")
 
-	// Read enviroment variables
-	env, err := utility.GetEnv()
+	// Load config
+	c := logger.NewConfig()
+	_, err := os.Stat("./timberconf.json")
+	if err != nil && os.IsNotExist(err) {
+		log.Println("Config file not found at ./timberconf.json. Loading default configs.")
+	} else if err != nil {
+		log.Fatalf("Error reading config file. Error: %v.\nExiting\n", err)
+	}
+	err = c.Load()
 	if err != nil {
-		log.Fatal(err)
+		log.Println("Error reading ./timberconf.json. Ussing default configs instead.")
 	}
+	log.Printf("Config:\nTimberData: %s\nTimberPort: %d\nTimberLogs %v", c.Data, c.Port, c.Logs)
 
-	log.Println(env)
-
-	// Initialize and perpare TIMBER_DATA directory
-	err = utility.InitDataDirectory(env)
+	// Initialize and perpare DATA directory
+	err = logger.InitDataDirectory(c.Data)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("Error loading log directory at %s. Error: %v.\nExiting.\n", c.Data, err)
 	}
 
-	// Fetch list of logfile paths
-	logFiles, err := utility.GetLogFiles(env)
-	if err != nil {
-		log.Fatal(err)
-	}
-	log.Println(logFiles)
+	// Setup StreamHandler
+	sh := logger.StreamHandler{}
 
-	// Create log Pool and attach existing logfiles
-	p := logger.NewPool(env)
-	for _, logFile := range logFiles {
-		p.Attach(logFile)
-		defer p.Detach(logFile)
+	// Create all log streams
+	for _, lf := range c.Logs {
+		lp := path.Join(c.Data, lf)
+		err := sh.Add(lf, lp)
+		if err != nil {
+			log.Println(err)
+		}
+	}
+	if len(sh) == 0 {
+		log.Fatal("Error no logs open.\nExiting.\n")
 	}
 
+	// Starting server
+	http.HandleFunc("/log/", sh.ServeHTTP)
+	http.ListenAndServe(":36036", nil)
 }
