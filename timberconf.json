@@ -1,0 +1,5 @@
+{
+    "data": "./timber",
+    "port": 36036,
+    "logs": ["default.log"]
+}
