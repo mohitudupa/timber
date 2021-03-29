@@ -16,15 +16,15 @@ func main() {
 	// Load config
 	c := logger.NewConfig()
 	_, err := os.Stat("./timberconf.json")
-	if err != nil && os.IsNotExist(err) {
-		log.Println("Config file not found at ./timberconf.json. Loading default configs.")
-	} else if err != nil {
+	if err != nil && !os.IsNotExist(err) {
 		log.Fatalf("Error reading config file. Error: %v.\nExiting\n", err)
 	}
+
 	err = c.Load()
 	if err != nil {
-		log.Println("Error reading ./timberconf.json. Ussing default configs instead.")
+		log.Println("Error reading ./timberconf.json. Using default configs instead.")
 	}
+
 	log.Printf("Config:\nTimberData: %s\nTimberPort: %d\nTimberLogs %v", c.Data, c.Port, c.Logs)
 
 	// Initialize and perpare DATA directory
