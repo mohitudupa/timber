@@ -17,5 +17,5 @@
 # Data folders
 timber/**
 
-# Development Makefile
-makefile
+# SnowGlobe
+SnowGlobe
