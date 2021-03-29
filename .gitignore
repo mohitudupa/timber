@@ -14,11 +14,8 @@
 # Dependency directories (remove the comment below to include it)
 # vendor/
 
-# Dev module
-dev/**
-
 # Data folders
-.timber/**
+timber/**
 
 # Development Makefile
 makefile
