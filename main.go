@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 	"path"
+	"strconv"
 
 	"github.com/mohitudupa/timber/logger"
 )
@@ -50,5 +51,8 @@ func main() {
 
 	// Starting server
 	http.HandleFunc("/log/", sh.ServeHTTP)
-	http.ListenAndServe(":36036", nil)
+	err = http.ListenAndServe(":"+strconv.Itoa(c.Port), nil)
+	if err != nil {
+		log.Fatalf("Error starting log server. Error: %v.\nExiting\n", err)
+	}
 }
