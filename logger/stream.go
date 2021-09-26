@@ -38,3 +38,8 @@ func (s *Stream) Start() {
 	}
 	s.fileStream.Close()
 }
+
+// Stop the stream
+func (s *Stream) Stop() {
+	close(s.channel)
+}

@@ -12,7 +12,7 @@ type StreamHandler map[string]*Stream
 func (sh *StreamHandler) Add(lf string, lp string) error {
 	s, err := NewStream(lp)
 	if err != nil {
-		return fmt.Errorf("Error creating log: %s. Error: %v.\n", lf, err)
+		return fmt.Errorf("error creating log: %s. error: %v", lf, err)
 	}
 	go s.Start()
 	(*sh)[lf] = s

@@ -26,7 +26,7 @@ func main() {
 		log.Println("Error reading ./timberconf.json. Using default configs instead.")
 	}
 
-	log.Printf("Config:\nTimberData: %s\nTimberPort: %d\nTimberLogs %v", c.Data, c.Port, c.Logs)
+	log.Printf("Config:\nTimberData: %s\nTimberPort: %d\nTimberLogs: %v", c.Data, c.Port, c.Logs)
 
 	// Initialize and perpare DATA directory
 	err = logger.InitDataDirectory(c.Data)
@@ -47,6 +47,11 @@ func main() {
 	}
 	if len(sh) == 0 {
 		log.Fatal("Error no logs open.\nExiting.\n")
+	}
+
+	// Closing streams while exiting
+	for _, s := range sh {
+		defer s.Stop()
 	}
 
 	// Starting server

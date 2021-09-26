@@ -6,7 +6,7 @@ import (
 )
 
 const (
-	defaultData = "./timber"
+	defaultData = "./timber-logs"
 	defaultPort = 36036
 	defaultLogs = "default.log"
 )
